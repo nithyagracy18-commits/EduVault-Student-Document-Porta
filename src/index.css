@@ -1,0 +1,171 @@
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "DM Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Syne", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+
+  /* Default (Teal) */
+  --color-bg-primary: #050B18;
+  --color-bg-secondary: #0A1628;
+  --color-bg-card: #0D1F3C;
+  --color-accent-green: #00D4AA;
+  --color-accent-glow: #00FFD1;
+  --color-accent-amber: #F59E0B;
+  --color-accent-coral: #F96167;
+  --color-accent-purple: #7C3AED;
+  --color-accent-blue: #3B82F6;
+  --color-text-primary: #F0F6FF;
+  --color-text-muted: #5E8FAB;
+  --color-border-accent: rgba(0, 212, 170, 0.12);
+}
+
+[data-theme="purple"] {
+  --color-bg-primary: #0D0519;
+  --color-bg-secondary: #130824;
+  --color-bg-card: #1A0F35;
+  --color-accent-green: #A78BFA;
+  --color-accent-glow: #C4B5FD;
+  --color-border-accent: rgba(167, 139, 250, 0.15);
+}
+
+[data-theme="amber"] {
+  --color-bg-primary: #0F0A00;
+  --color-bg-secondary: #1A1000;
+  --color-bg-card: #241800;
+  --color-accent-green: #F59E0B;
+  --color-accent-glow: #FCD34D;
+  --color-border-accent: rgba(245, 158, 11, 0.15);
+}
+
+[data-theme="blue"] {
+  --color-bg-primary: #020A1A;
+  --color-bg-secondary: #041020;
+  --color-bg-card: #06182E;
+  --color-accent-green: #60A5FA;
+  --color-accent-glow: #93C5FD;
+  --color-border-accent: rgba(96, 165, 250, 0.15);
+}
+
+@layer base {
+  body {
+    @apply bg-bg-primary text-text-primary antialiased selection:bg-accent-green/30 selection:text-accent-glow;
+    font-size: 16px;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-display tracking-tight text-text-primary;
+  }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(0, 212, 170, 0.05);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-accent-green);
+  border-radius: 99px;
+}
+
+/* Background Animations */
+.aurora-bg {
+  position: fixed;
+  inset: 0;
+  z-index: -20;
+  background: var(--color-bg-primary);
+  overflow: hidden;
+}
+
+.aurora-blob {
+  position: absolute;
+  width: 60vw;
+  height: 60vw;
+  filter: blur(100px);
+  opacity: 0.2;
+  border-radius: 50%;
+  animation: drift 25s infinite alternate ease-in-out;
+}
+
+.blob-1 {
+  background: radial-gradient(circle, var(--color-accent-green) 0%, transparent 70%);
+  top: -10%;
+  left: -10%;
+  animation-duration: 30s;
+}
+
+.blob-2 {
+  background: radial-gradient(circle, var(--color-accent-purple) 0%, transparent 70%);
+  bottom: -10%;
+  right: -10%;
+  animation-delay: -5s;
+  animation-duration: 35s;
+}
+
+.blob-3 {
+  background: radial-gradient(circle, rgba(0, 212, 170, 0.5) 0%, transparent 70%);
+  top: 40%;
+  left: 30%;
+  animation-delay: -10s;
+  animation-duration: 40s;
+}
+
+@keyframes drift {
+  from { transform: translate(0, 0) scale(1) rotate(0deg); }
+  to { transform: translate(10vw, 15vh) scale(1.1) rotate(20deg); }
+}
+
+.grid-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: -10;
+  background-image: radial-gradient(rgba(0, 212, 170, 0.05) 1px, transparent 1px);
+  background-size: 40px 40px;
+  pointer-events: none;
+}
+
+/* Glassmorphism Classes */
+.glass {
+  background: rgba(5, 11, 24, 0.6);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.glass-card {
+  background: rgba(13, 31, 60, 0.8);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(0, 212, 170, 0.12);
+}
+
+/* Markdown Styles for Chat */
+.markdown-body {
+  @apply space-y-4 font-sans;
+}
+
+.markdown-body h1, .markdown-body h2, .markdown-body h3 {
+  @apply font-display mt-6 mb-3 text-accent-glow;
+}
+
+.markdown-body p {
+  @apply leading-relaxed text-text-primary/90;
+}
+
+.markdown-body code {
+  @apply bg-bg-card px-2 py-0.5 rounded text-accent-green font-mono text-[13px] border border-border-accent;
+}
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Document Portal</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background-color: #f8f9fa; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        .hero { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 60px 0; margin-bottom: 40px; border-radius: 0 0 2rem 2rem; }
+        .card { border: none; border-radius: 1.5rem; box-shadow: 0 10px 30px rgba(0,0,0,0.05); transition: transform 0.2s; }
+        .card:hover { transform: translateY(-5px); }
+        .upload-area { border: 2px dashed #dee2e6; border-radius: 1rem; padding: 40px; text-align: center; background: white; cursor: pointer; }
+        .preview-img { width: 100%; height: 150px; object-fit: cover; border-radius: 1rem; }
+        .pdf-icon { font-size: 3rem; color: #dc3545; }
+    </style>
+</head>
+<body>
+
+<div class="hero text-center">
+    <div class="container">
+        <h1 class="display-4 fw-bold">Student Vault</h1>
+        <p class="lead">Securely upload and manage your academic documents</p>
+    </div>
+</div>
+
+<div class="container mb-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card p-4 mb-5">
+                <h5 class="mb-4 fw-bold">Upload New Document</h5>
+                <form id="uploadForm">
+                    <div class="input-group mb-3">
+                        <input type="file" class="form-control" id="fileInput" accept=".jpg,.jpeg,.png,.pdf">
+                        <button class="btn btn-primary px-4" type="submit" id="uploadBtn">Upload</button>
+                    </div>
+                    <div id="messageArea"></div>
+                </form>
+            </div>
+
+            <h4 class="mb-4 fw-bold">Your Documents</h4>
+            <div class="row" id="documentList">
+                <!-- Documents will be loaded here -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    async function fetchFiles() {
+        const response = await fetch('/files');
+        const files = await response.json();
+        const list = document.getElementById('documentList');
+        list.innerHTML = '';
+        
+        files.forEach(file => {
+            const isImage = file.filename.match(/\.(jpg|jpeg|png)$/i);
+            const card = document.createElement('div');
+            card.className = 'col-md-6 mb-4';
+            card.innerHTML = `
+                <div class="card h-100 p-3">
+                    <div class="mb-3 text-center">
+                        ${isImage ? 
+                            `<img src="${file.filepath}" class="preview-img" alt="Preview">` : 
+                            `<div class="py-4"><i class="pdf-icon">📄</i><p class="small text-muted mb-0">PDF Document</p></div>`
+                        }
+                    </div>
+                    <h6 class="fw-bold text-truncate">${file.filename}</h6>
+                    <p class="text-muted small mb-3">Uploaded: ${file.upload_date}</p>
+                    <a href="${file.filepath}" class="btn btn-outline-primary btn-sm rounded-pill w-100" download>Download</a>
+                </div>
+            `;
+            list.appendChild(card);
+        });
+    }
+
+    document.getElementById('uploadForm').onsubmit = async (e) => {
+        e.preventDefault();
+        const fileInput = document.getElementById('fileInput');
+        const btn = document.getElementById('uploadBtn');
+        if (!fileInput.files.length) return alert('Please select a file');
+
+        const formData = new FormData();
+        formData.append('file', fileInput.files[0]);
+
+        btn.disabled = true;
+        btn.innerHTML = 'Uploading...';
+
+        try {
+            const response = await fetch('/upload', {
+                method: 'POST',
+                body: formData
+            });
+            const result = await response.json();
+            
+            const messageArea = document.getElementById('messageArea');
+            if (response.ok) {
+                messageArea.innerHTML = `<div class="alert alert-success mt-3 small">${result.success}</div>`;
+                fileInput.value = '';
+                fetchFiles();
+            } else {
+                messageArea.innerHTML = `<div class="alert alert-danger mt-3 small">${result.error}</div>`;
+            }
+        } catch (err) {
+            console.error(err);
+        } finally {
+            btn.disabled = false;
+            btn.innerHTML = 'Upload';
+        }
+    };
+
+    // Initial load
+    fetchFiles();
+</script>
+
+</body>
+</html>
