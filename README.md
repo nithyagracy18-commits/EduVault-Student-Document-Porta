@@ -226,24 +226,6 @@ Through this project, the following concepts were explored:
 * Database Management
 * REST API Development
 * Cloud Deployment
-
----
-
-## Contributors
-
-Developed as a Mini Project under the School of Computer Science and Engineering, REVA University.
-
-### Team Members
-
-* Student 1
-* Student 2
-* Student 3
-* Student 4
-
-### Guide
-
-Faculty Guide – School of Computer Science and Engineering, REVA University
-
 ---
 
 ## License
